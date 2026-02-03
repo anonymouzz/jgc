@@ -11,7 +11,7 @@
 
   <groupId>hu.alphabox</groupId>
   <artifactId>jira-gitea-connector</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <properties>
     <java.version>25</java.version>
@@ -33,7 +33,7 @@
     <url>https://github.com/alphabox/jgc</url>
     <connection>scm:git:https://github.com/alphabox/jgc.git</connection>
     <developerConnection>scm:git:https://github.com/alphabox/jgc.git</developerConnection>
-    <tag>1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <artifactId>spring-boot-starter-parent</artifactId>
     <groupId>org.springframework.boot</groupId>
-    <relativePath/>
+    <relativePath />
     <version>4.0.2</version>
   </parent>
 
   <groupId>hu.alphabox</groupId>
   <artifactId>jira-gitea-connector</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <properties>
     <java.version>25</java.version>
@@ -27,14 +26,14 @@
     <!-- Image related properties -->
     <image.name>alphabox/jira-gitea-connector</image.name>
     <image.publish>false</image.publish>
-    <image.additional-names/>
+    <image.additional-names />
   </properties>
 
   <scm>
     <url>https://github.com/alphabox/jgc</url>
     <connection>scm:git:https://github.com/alphabox/jgc.git</connection>
     <developerConnection>scm:git:https://github.com/alphabox/jgc.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>1.0.0</tag>
   </scm>
 
   <dependencies>

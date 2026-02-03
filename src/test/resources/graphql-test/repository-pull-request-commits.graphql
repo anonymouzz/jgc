@@ -1,0 +1,21 @@
+# "variables":{"owner":"TestOrg","repo":"20250930-bt626-repository","pullNumber":1,"commitCount":100}
+query($owner: String!, $repo: String!, $pullNumber: Int!, $commitCount: Int!) {
+    repository(owner: $owner, name: $repo) {
+        pullRequest(number: $pullNumber) {
+            id
+            mergeCommit {
+                oid
+            }
+            commits(last: $commitCount) {
+                nodes {
+                    commit {
+                        oid
+                    }
+                }
+            }
+        }
+    }
+    rateLimit {
+        cost
+    }
+}

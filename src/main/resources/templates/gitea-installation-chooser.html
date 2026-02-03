@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Organization - Gitea</title>
+  <link rel="stylesheet" th:href="@{/assets/css/gitea-style.css}">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div class="main-container">
+  <div class="page-content compact">
+    <div class="logo-container">
+      <img src="https://raw.githubusercontent.com/detain/svg-logos/b02ee1ac30c7ff4757278337c95588b01ed0954b/svg/g/gitea.svg" alt="Gitea Logo" class="logo">
+    </div>
+
+    <h2 class="ui header center aligned">Select Organization</h2>
+    <p class="center aligned description">Choose an organization to continue</p>
+
+    <div class="search-container">
+      <div class="ui input fluid">
+        <input type="text" id="orgSearch" placeholder="Search organizations...">
+      </div>
+    </div>
+
+    <div class="organizations-scroll-container" id="organizationsScrollContainer">
+      <div class="organizations-list" id="organizationsList">
+        <div th:if="${#lists.isEmpty(organizations)}" class="no-organizations">
+          No organizations available
+        </div>
+        <div th:each="org : ${organizations}" class="organization-item" th:attr="data-id=${org.id}" th:data-name="${org.name}">
+          <div class="org-avatar">
+            <img th:src="${org.avatarUrl}" th:alt="${org.name}" class="avatar-image">
+          </div>
+          <div class="org-content">
+            <div class="org-name" th:text="${org.name}">Organization Name</div>
+          </div>
+          <div class="org-selector">
+            <div class="selection-indicator"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui divider compact"></div>
+
+    <div class="button-container compact">
+      <button type="button" class="ui primary button" id="selectBtn" disabled>Select Organization</button>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  let selectedOrgId = null;
+  let selectedOrgName = null;
+
+  function selectOrganization(orgId, orgName) {
+    selectedOrgId = orgId;
+    selectedOrgName = orgName;
+
+    // Update UI for all organization items
+    document.querySelectorAll('.organization-item').forEach(item => {
+      if (item.getAttribute('data-id') == orgId) {
+        item.classList.add('selected');
+      } else {
+        item.classList.remove('selected');
+      }
+    });
+
+    document.getElementById('selectBtn').disabled = false;
+  }
+
+  function filterOrganizations() {
+    const searchTerm = document.getElementById('orgSearch').value.toLowerCase();
+    const orgItems = document.querySelectorAll('.organization-item');
+
+    orgItems.forEach(item => {
+      const orgName = item.getAttribute('data-name').toLowerCase();
+      if (orgName.includes(searchTerm)) {
+        item.style.display = 'flex';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.organization-item').forEach(item => {
+      item.addEventListener('click', function () {
+        const orgId = this.getAttribute('data-id');
+        const orgName = this.getAttribute('data-name');
+        selectOrganization(orgId, orgName);
+      });
+    });
+
+    document.getElementById('orgSearch').addEventListener('input', filterOrganizations);
+
+    document.getElementById('selectBtn').addEventListener('click', function () {
+      if (selectedOrgId) {
+        const installationId = [[${installationId}]];
+        this.innerHTML = '<div class="ui active mini inline loader"></div> Connecting...';
+        this.disabled = true;
+        axios.post('/installations/' + installationId + '/organizations/select', {
+          organizationId: selectedOrgId
+        })
+        .then(response => {
+          if (response.status === 200 && response.data && response.data.redirectUrl) {
+            window.location.href = response.data.redirectUrl;
+          } else {
+            window.location.href = /*[[@{/application-error}]]*/ "/application-error";
+          }
+        })
+        .catch(error => {
+          window.location.href = /*[[@{/application-error}]]*/ "/application-error";
+        });
+      }
+    });
+  });
+  /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+# "variables":{"per_page":100,"order_by":"UPDATED_AT"}
+query ($per_page: Int!, $order_by: RepositoryOrderField = CREATED_AT, $cursor: String) {
+    viewer {
+        repositories(
+            first: $per_page,
+            after: $cursor,
+            orderBy: {field: $order_by, direction: DESC},
+            affiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR],
+            ownerAffiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR]
+        ) {
+            totalCount
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
+            edges {
+                node {
+                    id: databaseId
+                    name
+                    full_name: nameWithOwner
+                    description
+                    owner {
+                        login
+                        avatar_url: avatarUrl
+                    }
+                    html_url: url
+                    created_at: createdAt
+                    updated_at: updatedAt
+                    private: isPrivate
+                }
+            }
+        }
+    }
+    rateLimit {
+        cost
+    }
+}

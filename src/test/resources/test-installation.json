@@ -1,0 +1,42 @@
+{
+  "id": 1,
+  "clientId": "test-client-id",
+  "clientSecret": "test-client-secret",
+  "webhookUrl": "https://github.atlassian.com/github/8d3742bf-24d9-4ce4-a75f-07973a9dc689/webhooks",
+  "callbackUrl": "https://github.atlassian.com/github/8d3742bf-24d9-4ce4-a75f-07973a9dc689/callback",
+  "setupUrl": "https://github.atlassian.com/github/8d3742bf-24d9-4ce4-a75f-07973a9dc689/setup",
+  "privateKey": "-----BEGIN PRIVATE KEY-----\r\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCrmMt0OHTSMmMx\r\n6Hl/eBpwhcfhKBA+N3jv2lv523O6NR0e/9kM+P0Hyp9SvGdSPske11Yf4RcXyPp1\r\nRFR62TSLIbVOhMb2fSZIMtOqFMM+tIM2ge3GK/s2SOuXFDNqaD7WMxOfuzokgyq8\r\nXNjFKx4QVsLN/LGEjW1fgNjyJM6C39u9+OtjBAGB2FVXIomTTlEQX8zUsGqjwPPT\r\niFKUhnfOs3/oiM3pOMfAPRIxcmATx+ePDHpSU4rcXNaTBfJM2oZcw13va9SscrGu\r\nJazwXl2T0EBAs+fHtY2lyBvmvz8UtrM0XnsPq0KgRyBbjYs6jVQDX3kYmHFiN7ug\r\npZbehCoJAgMBAAECggEACkSKzAoCx38XW2mnN37myhvfMXRVwHtOQ7/jqAg/HQHH\r\nm87AXJvbfCdeMDOw1QWHwE4vS5oK6TPv9KthiLZNhBPAxxF/3EjxzPkpnDBA3JQt\r\nk8njgeuozP9BBZnCV9gkBmoo/vJTkNK+cGX33JhvZJfkcTHxJ1bVGBVcJeUY7FDC\r\njR7CyaZoRxVN2B15jo/POi8hFwr2XZqyHkwQgKGYezf/2u6vgXm3M7Dluw8EK6OJ\r\nPCpSSqfvV5JFrX+sW038bM2bt6OmJuewg/0Pb5J+eJIFPQe1qm3cmAP5sGLw0lyr\r\nhD+o/FyNoL0jL/AGA2aIPvlu0jbWSLO5s8KAI3hFRwKBgQDtSB0F+O/q06hq8VT/\r\nKkme6FUSF0JcgG7BjzFErV0FsFHn1vnaSU00plQvJsvMEuU0BmKW66fLVnQCviI+\r\nhmgtFkywKVm8tWBP/uF2S2mU286XjjdN67H1ZZ+IKl/vhoe1XGWKAC94LjacvJPf\r\nwQcJaelNcobRN/X25E6pNoo+IwKBgQC5Ii5Jdqo9bOaTtadOrPO8kbV0UrEa3Qq7\r\nSuONarrJcb8au7YGxjFyTbQtbq2MWv4gq7dGEzG0hdY0waQpFjsCCm92whjlf9BB\r\nyH4fbaKPRGTmF0BmJdAFaKDYIHjz4YP2gTwiHitVHcTsZG/dUmK0IEFnb8b6Df1T\r\n1TsoaT874wKBgQCBWjGwQtAPtQj4G83ZOKVfwoo1zYY4xS8bx8L1DIlMg51zBMe6\r\nTwGOtSnpdn3dJ2PZ4601VwxnFh8yK5KhgUYjZieyVSh9bmct1OX2RhAtvVI3XqkZ\r\nima+P4MjiO45tp4eqVsVSxqVqqPM+CSo8yKx6BHuTYPfZGFrEXUsW/Yq/wKBgB3A\r\nZHfh3hHpAlUSiESYfsL7F5IOB/AtPaBDtLXxRPtCkFeXevUzvJaF7kKu2q0HondV\r\noSpdw0sjhv0LcXo43FrDmo4XOzEGjU1FDx+12r3zW9OuQOcphHiaC98vuMBYqYBf\r\n3G4PMx+GnTLwIRoMN1iDJn+c8vkUbnWeetdPsp3JAoGASmNvNGgJi4YQIKBvWDH4\r\ng2y2h/R8PppguwivDmf9u6mjn6KxZm7JWVdnG7IMUatccrMKzCk516NUJoKzs1LR\r\nI2TfOfMferad57nBNbtyj+bz4vGhImJmjwU3nowC745NESV1LKVf8dgQvQ64YmRX\r\nYOZ0g1mtBJELBrKJbmDzm4I=\r\n-----END PRIVATE KEY-----\r\n",
+  "publicKey": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq5jLdDh00jJjMeh5f3ga\r\ncIXH4SgQPjd479pb+dtzujUdHv/ZDPj9B8qfUrxnUj7JHtdWH+EXF8j6dURUetk0\r\niyG1ToTG9n0mSDLTqhTDPrSDNoHtxiv7NkjrlxQzamg+1jMTn7s6JIMqvFzYxSse\r\nEFbCzfyxhI1tX4DY8iTOgt/bvfjrYwQBgdhVVyKJk05REF/M1LBqo8Dz04hSlIZ3\r\nzrN/6IjN6TjHwD0SMXJgE8fnjwx6UlOK3FzWkwXyTNqGXMNd72vUrHKxriWs8F5d\r\nk9BAQLPnx7WNpcgb5r8/FLazNF57D6tCoEcgW42LOo1UA195GJhxYje7oKWW3oQq\r\nCQIDAQAB\r\n-----END PUBLIC KEY-----\r\n",
+  "defaultEvents": [
+    "code_scanning_alert",
+    "commit_comment",
+    "create",
+    "delete",
+    "deployment_status",
+    "issue_comment",
+    "issues",
+    "pull_request",
+    "pull_request_review",
+    "push",
+    "repository",
+    "workflow_run"
+  ],
+  "defaultPermissions": {
+    "actions": "read",
+    "security_events": "read",
+    "contents": "write",
+    "deployments": "read",
+    "issues": "write",
+    "metadata": "read",
+    "pull_requests": "write",
+    "members": "read"
+  },
+  "installations": [
+    {
+      "id": 1,
+      "organizationId": 1
+    }
+  ],
+  "ownerId": 41,
+  "webhookSecret": "test-secret"
+}

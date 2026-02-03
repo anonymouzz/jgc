@@ -1,0 +1,1558 @@
+"""
+Represents an object which can take actions on GitHub. Typically a User or Bot.
+"""
+interface Actor {
+    """
+    A URL pointing to the actor's public avatar.
+    """
+    avatarUrl(
+        """
+        The size of the resulting square image.
+        """
+        size: Int
+    ): URI!
+
+    """
+    The username of the actor.
+    """
+    login: String!
+
+    """
+    The HTTP URL for this actor.
+    """
+    url: URI!
+}
+
+"""
+Represents a Git commit.
+"""
+type Commit implements GitObject {
+    """
+    Authorship details of the commit.
+    """
+    author: GitActor
+
+    """
+    The datetime when this commit was authored.
+    """
+    authoredDate: DateTime!
+
+    """
+    We recommend using the `changedFilesIfAvailable` field instead of
+    `changedFiles`, as `changedFiles` will cause your request to return an error
+    if GitHub is unable to calculate the number of changed files.
+    """
+    changedFiles: Int!
+    @deprecated(
+        reason: "`changedFiles` will be removed. Use `changedFilesIfAvailable` instead. Removal on 2023-01-01 UTC."
+    )
+
+    """
+    The linear commit history starting from (and including) this commit, in the same order as `git log`.
+    """
+    history(
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the first _n_ elements from the list.
+        """
+        first: Int
+
+        """
+        Allows specifying a beginning time or date for fetching commits. Unexpected
+        results may be returned for dates not between 1970-01-01 and 2099-12-13 (inclusive).
+        """
+        since: GitTimestamp
+    ): CommitHistoryConnection!
+
+    """
+    The Git commit message
+    """
+    message: String!
+
+    """
+    The Git object ID
+    """
+    oid: GitObjectID!
+
+    """
+    The Repository this commit belongs to
+    """
+    repository: Repository!
+
+    """
+    The HTTP URL for this commit
+    """
+    url: URI!
+
+}
+
+"""
+An edge in a connection.
+"""
+type CommitEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: Commit
+}
+
+"""
+The connection type for Commit.
+"""
+type CommitHistoryConnection {
+    """
+    A list of edges.
+    """
+    edges: [CommitEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [Commit]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An ISO-8601 encoded UTC date string.
+"""
+scalar DateTime
+
+
+"""
+Represents triggered deployment instance.
+"""
+type Deployment {
+    """
+    Identifies the oid of the deployment commit, even if the commit has been deleted.
+    """
+    commitOid: String!
+
+    """
+    Identifies the date and time when the object was created.
+    """
+    createdAt: DateTime!
+
+    """
+    Identifies the primary key from the database.
+    """
+    databaseId: Int
+
+    """
+    The deployment description.
+    """
+    description: String
+
+    """
+    The latest environment to which this deployment was made.
+    """
+    environment: String
+
+    """
+    The latest status of this deployment.
+    """
+    latestStatus: DeploymentStatus
+
+    """
+    Identifies the Ref of the deployment, if the deployment was created by ref.
+    """
+    ref: Ref
+
+    """
+    Identifies the repository associated with the deployment.
+    """
+    repository: Repository!
+
+    """
+    A list of statuses associated with the deployment.
+    """
+    statuses(
+        """
+        Returns the elements in the list that come before the specified cursor.
+        """
+        before: String
+
+        """
+        Returns the last _n_ elements from the list.
+        """
+        last: Int
+    ): DeploymentStatusConnection
+
+    """
+    The deployment task.
+    """
+    task: String
+}
+
+"""
+The connection type for Deployment.
+"""
+type DeploymentConnection {
+    """
+    A list of edges.
+    """
+    edges: [DeploymentEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [Deployment]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type DeploymentEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: Deployment
+}
+
+"""
+Ordering options for deployment connections
+"""
+input DeploymentOrder {
+    """
+    The ordering direction.
+    """
+    direction: OrderDirection!
+
+    """
+    The field to order deployments by.
+    """
+    field: DeploymentOrderField!
+}
+
+"""
+Properties by which deployment connections can be ordered.
+"""
+enum DeploymentOrderField {
+    """
+    Order collection by creation time
+    """
+    CREATED_AT
+}
+
+"""
+Describes the status of a given deployment attempt.
+"""
+type DeploymentStatus {
+    """
+    Identifies the date and time when the object was created.
+    """
+    createdAt: DateTime!
+
+    """
+    Identifies the environment URL of the deployment.
+    """
+    environmentUrl: URI
+
+    """
+    The Node ID of the DeploymentStatus object
+    """
+    id: ID!
+
+    """
+    Identifies the log URL of the deployment.
+    """
+    logUrl: URI
+
+    """
+    Identifies the current state of the deployment.
+    """
+    state: DeploymentStatusState!
+
+    """
+    Identifies the date and time when the object was last updated.
+    """
+    updatedAt: DateTime!
+}
+
+"""
+The connection type for DeploymentStatus.
+"""
+type DeploymentStatusConnection {
+    """
+    A list of edges.
+    """
+    edges: [DeploymentStatusEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [DeploymentStatus]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type DeploymentStatusEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: DeploymentStatus
+}
+
+"""
+The possible states for a deployment status.
+"""
+enum DeploymentStatusState {
+    """
+    The deployment experienced an error.
+    """
+    ERROR
+
+    """
+    The deployment has failed.
+    """
+    FAILURE
+
+    """
+    The deployment is inactive.
+    """
+    INACTIVE
+
+    """
+    The deployment is in progress.
+    """
+    IN_PROGRESS
+
+    """
+    The deployment is pending.
+    """
+    PENDING
+
+    """
+    The deployment is queued
+    """
+    QUEUED
+
+    """
+    The deployment was successful.
+    """
+    SUCCESS
+
+    """
+    The deployment is waiting.
+    """
+    WAITING
+}
+
+"""
+Represents an actor in a Git commit (ie. an author or committer).
+"""
+type GitActor {
+    """
+    A URL pointing to the author's public avatar.
+    """
+    avatarUrl(
+        """
+        The size of the resulting square image.
+        """
+        size: Int
+    ): URI!
+
+    """
+    The email in the Git commit.
+    """
+    email: String
+
+    """
+    The name in the Git commit.
+    """
+    name: String
+
+    """
+    The GitHub user corresponding to the email field. Null if no such user exists.
+    """
+    user: User
+}
+
+"""
+Represents a Git object.
+"""
+interface GitObject {
+    """
+    The Git object ID
+    """
+    oid: GitObjectID!
+
+}
+
+"""
+A Git object ID.
+"""
+scalar GitObjectID
+
+"""
+An ISO-8601 encoded date string. Unlike the DateTime type, GitTimestamp is not converted in UTC.
+"""
+scalar GitTimestamp
+
+"""
+The connection type for 'IssueComment'.
+"""
+type IssueCommentConnection {
+    """
+    A list of edges.
+    """
+    edges: [IssueCommentEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [Void]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type IssueCommentEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: Void
+}
+
+"""
+Ways in which lists of issues can be ordered upon return.
+"""
+input IssueOrder {
+    """
+    The direction in which to order issues by the specified field.
+    """
+    direction: OrderDirection!
+
+    """
+    The field in which to order issues by.
+    """
+    field: IssueOrderField!
+}
+
+"""
+Properties by which issue connections can be ordered.
+"""
+enum IssueOrderField {
+    """
+    Order issues by comment count
+    """
+    COMMENTS
+
+    """
+    Order issues by creation time
+    """
+    CREATED_AT
+
+    """
+    Order issues by update time
+    """
+    UPDATED_AT
+}
+
+"""
+Possible directions in which to order a list of items when provided an `orderBy` argument.
+"""
+enum OrderDirection {
+    """
+    Specifies an ascending order for a given `orderBy` argument.
+    """
+    ASC
+
+    """
+    Specifies a descending order for a given `orderBy` argument.
+    """
+    DESC
+}
+
+"""
+An account on GitHub, with one or more owners, that has repositories, members and teams.
+"""
+type Organization implements Actor & RepositoryOwner {
+    """
+    A URL pointing to the organization's public avatar.
+    """
+    avatarUrl(
+        """
+        The size of the resulting square image.
+        """
+        size: Int
+    ): URI!
+
+    """
+    The organization's login name.
+    """
+    login: String!
+
+    """
+    The HTTP URL for this organization.
+    """
+    url: URI!
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo {
+    """
+    When paginating forwards, the cursor to continue.
+    """
+    endCursor: String
+
+    """
+    When paginating forwards, are there more items?
+    """
+    hasNextPage: Boolean!
+
+    """
+    When paginating backwards, are there more items?
+    """
+    hasPreviousPage: Boolean!
+
+    """
+    When paginating backwards, the cursor to continue.
+    """
+    startCursor: String
+}
+
+"""
+A repository pull request.
+"""
+type PullRequest {
+    """
+    The actor who authored the comment.
+    """
+    author: Actor
+
+    """
+    Identifies the name of the base Ref associated with the pull request, even if the ref has been deleted.
+    """
+    baseRefName: String!
+
+    """
+    The body as Markdown.
+    """
+    body: String!
+
+    """
+    A list of comments associated with the pull request.
+    """
+    comments: IssueCommentConnection!
+
+    """
+    A list of commits present in this pull request's head branch not present in the base branch.
+    """
+    commits(
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the elements in the list that come before the specified cursor.
+        """
+        before: String
+
+        """
+        Returns the first _n_ elements from the list.
+        """
+        first: Int
+
+        """
+        Returns the last _n_ elements from the list.
+        """
+        last: Int
+    ): PullRequestCommitConnection!
+
+    """
+    Identifies the date and time when the object was created.
+    """
+    createdAt: DateTime!
+
+    """
+    Identifies the head Ref associated with the pull request.
+    """
+    headRef: Ref
+
+    """
+    Identifies the name of the head Ref associated with the pull request, even if the ref has been deleted.
+    """
+    headRefName: String!
+
+    """
+    The Node ID of the PullRequest object
+    """
+    id: ID!
+
+    """
+    The commit that was created when this pull request was merged.
+    """
+    mergeCommit: Commit
+
+    """
+    The date and time that the pull request was merged.
+    """
+    mergedAt: DateTime
+
+    """
+    Identifies the pull request number.
+    """
+    number: Int!
+
+    """
+    The repository associated with this node.
+    """
+    repository: Repository!
+
+    """
+    A list of review requests associated with the pull request.
+    """
+    reviewRequests(
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the first _n_ elements from the list.
+        """
+        first: Int
+    ): ReviewRequestConnection
+
+    """
+    A list of reviews associated with the pull request.
+    """
+    reviews(
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the first _n_ elements from the list.
+        """
+        first: Int
+    ): PullRequestReviewConnection
+
+    """
+    Identifies the state of the pull request.
+    """
+    state: PullRequestState!
+
+    """
+    Identifies the pull request title.
+    """
+    title: String!
+
+    """
+    Identifies the date and time when the object was last updated.
+    """
+    updatedAt: DateTime!
+
+    """
+    The HTTP URL for this pull request.
+    """
+    url: URI!
+}
+
+"""
+Represents a Git commit part of a pull request.
+"""
+type PullRequestCommit {
+    """
+    The Git commit object
+    """
+    commit: Commit!
+
+    """
+    The Node ID of the PullRequestCommit object
+    """
+    id: ID!
+
+    """
+    The pull request this commit belongs to
+    """
+    pullRequest: PullRequest!
+
+    """
+    The HTTP path for this pull request commit
+    """
+    resourcePath: URI!
+
+    """
+    The HTTP URL for this pull request commit
+    """
+    url: URI!
+}
+
+"""
+The connection type for PullRequestCommit.
+"""
+type PullRequestCommitConnection {
+    """
+    A list of edges.
+    """
+    edges: [PullRequestCommitEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [PullRequestCommit]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type PullRequestCommitEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: PullRequestCommit
+}
+
+"""
+The connection type for PullRequest.
+"""
+type PullRequestConnection {
+    """
+    A list of edges.
+    """
+    edges: [PullRequestEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [PullRequest]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type PullRequestEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: PullRequest
+}
+
+"""
+A review object for a given pull request.
+"""
+type PullRequestReview {
+    """
+    The actor who authored the comment.
+    """
+    author: Actor
+
+    """
+    Identifies the primary key from the database.
+    """
+    databaseId: Int
+    @deprecated(
+        reason: "`databaseId` will be removed because it does not support 64-bit signed integer identifiers. Use `fullDatabaseId` instead. Removal on 2024-07-01 UTC."
+    )
+
+    """
+    Identifies the pull request associated with this pull request review.
+    """
+    pullRequest: PullRequest!
+
+    """
+    The repository associated with this node.
+    """
+    repository: Repository!
+
+    """
+    Identifies the current state of the pull request review.
+    """
+    state: PullRequestReviewState!
+
+    """
+    Identifies when the Pull Request Review was submitted
+    """
+    submittedAt: DateTime
+}
+
+"""
+The connection type for PullRequestReview.
+"""
+type PullRequestReviewConnection {
+    """
+    A list of edges.
+    """
+    edges: [PullRequestReviewEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [PullRequestReview]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type PullRequestReviewEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: PullRequestReview
+}
+
+"""
+The possible states of a pull request review.
+"""
+enum PullRequestReviewState {
+    """
+    A review allowing the pull request to merge.
+    """
+    APPROVED
+
+    """
+    A review blocking the pull request from merging.
+    """
+    CHANGES_REQUESTED
+
+    """
+    An informational review.
+    """
+    COMMENTED
+
+    """
+    A review that has been dismissed.
+    """
+    DISMISSED
+
+    """
+    A review that has not yet been submitted.
+    """
+    PENDING
+}
+
+"""
+The possible states of a pull request.
+"""
+enum PullRequestState {
+    """
+    A pull request that has been closed without being merged.
+    """
+    CLOSED
+
+    """
+    A pull request that has been closed by being merged.
+    """
+    MERGED
+
+    """
+    A pull request that is still open.
+    """
+    OPEN
+}
+
+"""
+The query root of GitHub's GraphQL interface.
+"""
+type Query {
+    """
+    Lookup a given repository by the owner and repository name.
+    """
+    repository(
+        """
+        The name of the repository
+        """
+        name: String!
+
+        """
+        The login field of a user or organization
+        """
+        owner: String!
+    ): Repository
+
+    """
+    The currently authenticated user.
+    """
+    viewer: User!
+
+    """
+    The client's rate limit information.
+    """
+    rateLimit(
+        """
+        If true, calculate the cost for the query without evaluating it
+        """
+        dryRun: Boolean = false
+    ): RateLimit
+}
+
+"""
+Represents the client's rate limit.
+"""
+type RateLimit {
+    """
+    The point cost for the current query counting against the rate limit.
+    """
+    cost: Int!
+}
+
+"""
+Represents a Git reference.
+"""
+type Ref {
+    """
+    A list of pull requests with this ref as the head ref.
+    """
+    associatedPullRequests(
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the first _n_ elements from the list.
+        """
+        first: Int
+    ): PullRequestConnection!
+
+    """
+    The Node ID of the Ref object
+    """
+    id: ID!
+
+    """
+    The ref name.
+    """
+    name: String!
+
+    """
+    The ref's prefix, such as `refs/heads/` or `refs/tags/`.
+    """
+    prefix: String!
+
+    """
+    The repository the ref belongs to.
+    """
+    repository: Repository!
+
+    """
+    The object the ref points to. Returns null when object does not exist.
+    """
+    target: GitObject
+}
+
+"""
+The connection type for Ref.
+"""
+type RefConnection {
+    """
+    A list of edges.
+    """
+    edges: [RefEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [Ref]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type RefEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: Ref
+}
+
+"""
+Ways in which lists of git refs can be ordered upon return.
+"""
+input RefOrder {
+    """
+    The direction in which to order refs by the specified field.
+    """
+    direction: OrderDirection!
+
+    """
+    The field in which to order refs by.
+    """
+    field: RefOrderField!
+}
+
+"""
+Properties by which ref connections can be ordered.
+"""
+enum RefOrderField {
+    """
+    Order refs by their alphanumeric name
+    """
+    ALPHABETICAL
+
+    """
+    Order refs by underlying commit date if the ref prefix is refs/tags/
+    """
+    TAG_COMMIT_DATE
+}
+
+"""
+A repository contains the content for a project.
+"""
+type Repository {
+    """
+    Identifies the date and time when the object was created.
+    """
+    createdAt: DateTime!
+
+    """
+    Identifies the primary key from the database.
+    """
+    databaseId: Int
+
+    """
+    The Ref associated with the repository's default branch.
+    """
+    defaultBranchRef: Ref
+
+    """
+    Deployments associated with the repository
+    """
+    deployments(
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the first _n_ elements from the list.
+        """
+        first: Int
+
+        """
+        Ordering options for deployments returned from the connection.
+        """
+        orderBy: DeploymentOrder = {field: CREATED_AT, direction: ASC}
+    ): DeploymentConnection!
+
+    """
+    The description of the repository.
+    """
+    description: String
+
+    """
+    The Node ID of the Repository object
+    """
+    id: ID!
+
+    """
+    Identifies if the repository is private or internal.
+    """
+    isPrivate: Boolean!
+
+    """
+    The name of the repository.
+    """
+    name: String!
+
+    """
+    The repository's name with owner.
+    """
+    nameWithOwner: String!
+
+    """
+    The User owner of the repository.
+    """
+    owner: RepositoryOwner!
+
+    """
+    Returns a single pull request from the current repository by number.
+    """
+    pullRequest(
+        """
+        The number for the pull request to be returned.
+        """
+        number: Int!
+    ): PullRequest
+
+    """
+    A list of pull requests that have been opened in the repository.
+    """
+    pullRequests(
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the first _n_ elements from the list.
+        """
+        first: Int
+
+        """
+        Ordering options for pull requests returned from the connection.
+        """
+        orderBy: IssueOrder
+    ): PullRequestConnection!
+
+    """
+    Fetch a list of refs from the repository
+    """
+    refs(
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the first _n_ elements from the list.
+        """
+        first: Int
+
+        """
+        A ref name prefix like `refs/heads/`, `refs/tags/`, etc.
+        """
+        refPrefix: String!
+    ): RefConnection
+
+    """
+    Identifies the date and time when the object was last updated.
+    """
+    updatedAt: DateTime!
+
+    """
+    The HTTP URL for this repository
+    """
+    url: URI!
+}
+
+"""
+The affiliation of a user to a repository
+"""
+enum RepositoryAffiliation {
+    """
+    Repositories that the user has been added to as a collaborator.
+    """
+    COLLABORATOR
+
+    """
+    Repositories that the user has access to through being a member of an
+    organization. This includes every repository on every team that the user is on.
+    """
+    ORGANIZATION_MEMBER
+
+    """
+    Repositories that are owned by the authenticated user.
+    """
+    OWNER
+}
+
+"""
+A list of repositories owned by the subject.
+"""
+type RepositoryConnection {
+    """
+    A list of edges.
+    """
+    edges: [RepositoryEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [Repository]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type RepositoryEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: Repository
+}
+
+"""
+Ordering options for repository connections
+"""
+input RepositoryOrder {
+    """
+    The ordering direction.
+    """
+    direction: OrderDirection!
+
+    """
+    The field to order repositories by.
+    """
+    field: RepositoryOrderField!
+}
+
+"""
+Properties by which repository connections can be ordered.
+"""
+enum RepositoryOrderField {
+    """
+    Order repositories by creation time
+    """
+    CREATED_AT
+
+    """
+    Order repositories by name
+    """
+    NAME
+
+    """
+    Order repositories by push time
+    """
+    PUSHED_AT
+
+    """
+    Order repositories by number of stargazers
+    """
+    STARGAZERS
+
+    """
+    Order repositories by update time
+    """
+    UPDATED_AT
+}
+
+"""
+Represents an owner of a Repository.
+"""
+interface RepositoryOwner {
+    """
+    A URL pointing to the owner's public avatar.
+    """
+    avatarUrl(
+        """
+        The size of the resulting square image.
+        """
+        size: Int
+    ): URI!
+
+    """
+    The username used to login.
+    """
+    login: String!
+}
+
+"""
+The privacy of a repository
+"""
+enum RepositoryPrivacy {
+    """
+    Private
+    """
+    PRIVATE
+
+    """
+    Public
+    """
+    PUBLIC
+}
+
+"""
+The repository's visibility level.
+"""
+enum RepositoryVisibility {
+    """
+    The repository is visible only to users in the same enterprise.
+    """
+    INTERNAL
+
+    """
+    The repository is visible only to those with explicit access.
+    """
+    PRIVATE
+
+    """
+    The repository is visible to everyone.
+    """
+    PUBLIC
+}
+
+"""
+Types that can be requested reviewers.
+"""
+union RequestedReviewer = User
+
+"""
+A request for a user to review a pull request.
+"""
+type ReviewRequest {
+    """
+    The reviewer that is requested.
+    """
+    requestedReviewer: RequestedReviewer
+}
+
+"""
+The connection type for ReviewRequest.
+"""
+type ReviewRequestConnection {
+    """
+    A list of edges.
+    """
+    edges: [ReviewRequestEdge]
+
+    """
+    A list of nodes.
+    """
+    nodes: [ReviewRequest]
+
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+
+    """
+    Identifies the total count of items in the connection.
+    """
+    totalCount: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type ReviewRequestEdge {
+    """
+    A cursor for use in pagination.
+    """
+    cursor: String!
+
+    """
+    The item at the end of the edge.
+    """
+    node: ReviewRequest
+}
+
+"""
+Represents a Git tag.
+"""
+type Tag implements GitObject {
+    """
+    The Git object ID
+    """
+    oid: GitObjectID!
+}
+
+"""
+An RFC 3986, RFC 3987, and RFC 6570 (level 4) compliant URI string.
+"""
+scalar URI
+
+
+"""
+A user is an individual's account on GitHub that owns repositories and can make new content.
+"""
+type User implements Actor & RepositoryOwner {
+    """
+    A URL pointing to the user's public avatar.
+    """
+    avatarUrl(
+        """
+        The size of the resulting square image.
+        """
+        size: Int
+    ): URI!
+
+    """
+    Identifies the primary key from the database.
+    """
+    databaseId: Int
+
+    """
+    The user's publicly visible profile email.
+    """
+    email: String!
+
+    """
+    The username used to login.
+    """
+    login: String!
+
+    """
+    The user's public profile name.
+    """
+    name: String
+
+    """
+    A list of repositories that the user owns.
+    """
+    repositories(
+        """
+        Array of viewer's affiliation options for repositories returned from the
+        connection. For example, OWNER will include only repositories that the
+        current viewer owns.
+        """
+        affiliations: [RepositoryAffiliation]
+
+        """
+        Returns the elements in the list that come after the specified cursor.
+        """
+        after: String
+
+        """
+        Returns the first _n_ elements from the list.
+        """
+        first: Int
+
+        """
+        Ordering options for repositories returned from the connection
+        """
+        orderBy: RepositoryOrder
+
+        """
+        Array of owner's affiliation options for repositories returned from the
+        connection. For example, OWNER will include only repositories that the
+        organization or user being viewed owns.
+        """
+        ownerAffiliations: [RepositoryAffiliation] = [OWNER, COLLABORATOR]
+    ): RepositoryConnection!
+
+    """
+    The HTTP URL for this user
+    """
+    url: URI!
+}
+
+"""
+A custom marker scalar where we don't want to return anything.
+Only used to keep the form of the schema.
+"""
+scalar Void

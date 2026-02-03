@@ -1,0 +1,57 @@
+# "variables":{"owner":"TestOrg","repo":"20250930-bt626-repository","per_page":100,"commitSince":"2025-04-03T11:24:02.042Z","cursor":"MQ","shouldFetchAuthorInfo":true}
+query ($owner: String!, $repo: String!, $per_page: Int!, $commitSince: GitTimestamp, $cursor: String, $shouldFetchAuthorInfo: Boolean!) {
+    repository(owner: $owner, name: $repo) {
+        refs(first: $per_page, refPrefix: "refs/heads/", after: $cursor) {
+            edges {
+                cursor
+                node {
+                    associatedPullRequests(first:1) {
+                        nodes {
+                            title
+                        }
+                    }
+                    name
+                    target {
+                        ... on Commit {
+                            author @include(if: $shouldFetchAuthorInfo) {
+                                avatarUrl
+                                email
+                                name
+                                user {
+                                    url
+                                    id: databaseId
+                                }
+                            }
+                            authoredDate
+                            changedFiles
+                            history(since: $commitSince, first: 50) {
+                                nodes {
+                                    message
+                                    oid
+                                    authoredDate
+                                    author @include(if: $shouldFetchAuthorInfo) {
+                                        avatarUrl
+                                        email
+                                        name
+                                        user {
+                                            url
+                                            id: databaseId
+                                        }
+                                    }
+                                    url
+                                    changedFiles
+                                }
+                            }
+                            oid
+                            message
+                            url
+                        }
+                    }
+                }
+            }
+        }
+    }
+    rateLimit {
+        cost
+    }
+}

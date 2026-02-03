@@ -1,0 +1,35 @@
+# "variables":{"owner":"TestOrg","repo":"20250930-bt626-repository","per_page":100,"cursor":"0f0163eb8679c8ebf8407d0486444d17ee377b9e 0","commitSince":"2025-04-03T11:24:02.042Z","shouldFetchAuthorInfo":true}
+query ($owner: String!, $repo: String!, $per_page: Int!, $commitSince: GitTimestamp, $cursor: String, $shouldFetchAuthorInfo: Boolean!) {
+    repository(owner: $owner, name: $repo){
+        defaultBranchRef {
+            target {
+                ... on Commit {
+                    history(first: $per_page, after: $cursor, since: $commitSince) {
+                        edges {
+                            cursor
+                            node {
+                                author @include(if: $shouldFetchAuthorInfo) {
+                                    avatarUrl
+                                    email
+                                    name
+                                    user {
+                                        url
+                                        id: databaseId
+                                    }
+                                }
+                                authoredDate
+                                message
+                                oid
+                                url
+                                changedFiles
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    rateLimit {
+        cost
+    }
+}

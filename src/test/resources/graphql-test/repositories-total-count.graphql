@@ -1,0 +1,11 @@
+# When: An organization disconnected, and after that it reconnected
+query {
+    viewer {
+        repositories {
+            totalCount
+        }
+    }
+    rateLimit {
+        cost
+    }
+}

@@ -1,0 +1,117 @@
+# "variables":{"owner":"TestOrg","repo":"20250930-bt626-repository","per_page":100,"commitCount":100,"shouldFetchAuthorInfo":true}
+query getPullRequests ($owner: String!, $repo: String!, $per_page: Int!, $commitCount: Int!, $cursor: String, $shouldFetchAuthorInfo: Boolean!) {
+    repository(owner: $owner, name: $repo) {
+
+        pullRequests(first: $per_page, orderBy: {field: CREATED_AT, direction: DESC}, after: $cursor) {
+            edges {
+                cursor
+                node {
+                    number
+                    id
+                    state
+                    mergedAt
+                    createdAt
+                    updatedAt
+                    title
+                    body
+                    url
+                    baseRefName,
+                    headRefName,
+                    headRef {
+                        id
+                        name
+                        repository {
+                            url
+                            name
+                            owner {
+                                login
+                            }
+                        }
+                        target {
+                            oid
+                            ... on Commit {
+                                author @include(if: $shouldFetchAuthorInfo) {
+                                    user {
+                                        login
+                                        email
+                                        avatarUrl
+                                        name
+                                        url
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    comments {
+                        totalCount
+                    }
+                    author @include(if: $shouldFetchAuthorInfo) {
+                        login
+                        avatarUrl
+                        url
+                        ... on User {
+                            name
+                            email
+                            id: databaseId
+                        }
+                    }
+                    mergeCommit {
+                        oid
+                    }
+                    commits(last: $commitCount) {
+                        nodes {
+                            commit {
+                                oid
+                                author @include(if: $shouldFetchAuthorInfo) {
+                                    user {
+                                        login
+                                        email
+                                        avatarUrl
+                                        name
+                                        url
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    reviews(first: 100) {
+                        nodes {
+                            submittedAt
+                            state
+                            author @include(if: $shouldFetchAuthorInfo) {
+                                login
+                                avatarUrl
+                                url
+                                ... on User {
+                                    name
+                                    email
+                                    id: databaseId
+                                }
+                            }
+                        }
+                    }
+                    reviewRequests(first: 100) {
+                        nodes {
+                            author: requestedReviewer @include(if: $shouldFetchAuthorInfo) {
+                                __typename
+                                ... on User {
+                                    login
+                                    avatarUrl
+                                    url
+                                    ... on User {
+                                        name
+                                        email
+                                        id: databaseId
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    rateLimit {
+        cost
+    }
+}

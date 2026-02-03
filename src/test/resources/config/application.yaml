@@ -1,0 +1,12 @@
+application:
+  installation-path: src/test/resources/test-installation.json
+  gitea:
+    base-url: gitea-base-url.test
+    client:
+      access-token: fake
+  base-url: base-url.test
+
+logging:
+  structured:
+    format:
+      console:

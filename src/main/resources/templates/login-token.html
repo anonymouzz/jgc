@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter Access Token - Gitea</title>
+  <link rel="stylesheet" th:href="@{/assets/css/gitea-style.css}">
+</head>
+<body>
+<div class="main-container">
+  <div class="page-content compact">
+    <div class="logo-container">
+      <img src="https://raw.githubusercontent.com/detain/svg-logos/b02ee1ac30c7ff4757278337c95588b01ed0954b/svg/g/gitea.svg" alt="Gitea Logo" class="logo">
+    </div>
+
+    <h2 class="ui header center aligned">Enter Access Token</h2>
+    <p class="center aligned description">Please provide your personal access token to connect.</p>
+
+    <form id="tokenForm" action="/login/token" method="POST">
+      <!--      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+      <div class="search-container">
+        <div class="ui input fluid">
+          <input type="password" id="token" name="token" placeholder="Paste your access token here..." required>
+        </div>
+        <small style="display: block; margin-top: 0.5rem; color: #888; font-size: 0.8rem; text-align: center;">
+          The token is required for authentication.
+        </small>
+      </div>
+
+      <div class="ui divider compact" style="margin-top: 1.5rem;"></div>
+
+      <div class="button-container compact">
+        <button type="submit" class="ui primary button" id="loginBtn">Connect and Log In</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+  document.getElementById('tokenForm').addEventListener('submit', function (event) {
+    const loginBtn = document.getElementById('loginBtn');
+    const tokenInput = document.getElementById('accessToken');
+
+    // A HTML5 validáció futtatása
+    if (!tokenInput.checkValidity()) {
+      // Ha nem valid, a böngésző megjeleníti a hibaüzenetet (pl. "Töltse ki ezt a mezőt")
+      // és a submit eseményt meg kell akadályozni a régi böngészők kompatibilitása érdekében,
+      // bár a modern böngészők ezt a 'required' miatt alapból megteszik.
+      return;
+    }
+
+    // A kód csak akkor fut le, ha a HTML5 validáció sikeres volt
+
+    // Vizuális visszajelzés a gombnál (betöltés jelzés)
+    loginBtn.innerHTML = '<div class="ui active mini inline loader"></div> Connecting...';
+    loginBtn.disabled = true;
+
+    // Az űrlap ezután elküldődik a megadott 'action="/login"' URL-re.
+  });
+</script>
+</body>
+</html>

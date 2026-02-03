@@ -1,0 +1,56 @@
+server:
+  forward-headers-strategy: native
+
+application:
+  base-url:
+  installation-path: installation.json
+  gitea:
+    base-url:
+    client:
+      access-token:
+      concurrency-limit: 12
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+  main:
+    banner-mode: off
+    log-startup-info: off
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+  graphql:
+    schema:
+      inspection:
+        enabled: false
+      introspection:
+        enabled: false
+    http:
+      path: /api/graphql
+  mvc:
+    static-path-pattern: /assets/**
+  web:
+    resources:
+      static-locations: classpath:/static/assets/
+management:
+  defaults:
+    metrics:
+      export:
+        enabled: false
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  tracing:
+    export.enabled: false
+    sampling:
+      probability: 1.0
+logging:
+  structured:
+    format:
+      console: logstash

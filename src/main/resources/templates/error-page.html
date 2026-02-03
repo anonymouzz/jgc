@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${title ?: 'Unexpected Error'}">Unexpected Error</title>
+  <link rel="stylesheet" th:href="@{/assets/css/gitea-style.css}">
+</head>
+<body>
+<div class="main-container">
+  <div class="page-content compact">
+    <div class="logo-container">
+      <img src="https://raw.githubusercontent.com/detain/svg-logos/b02ee1ac30c7ff4757278337c95588b01ed0954b/svg/g/gitea.svg" alt="Gitea Logo" class="logo">
+    </div>
+
+    <h2 class="ui header center aligned"
+        th:text="${title ?: 'Unexpected Error'}">Unexpected Error</h2>
+    <p class="center aligned description"
+       th:text="${description ?: 'An unexpected error has occurred while processing your request'}">
+      An unexpected error has occurred while processing your request
+    </p>
+  </div>
+</body>
+</html>

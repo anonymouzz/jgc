@@ -1,0 +1,60 @@
+package hu.alphabox.jgc.github;
+
+import hu.alphabox.jgc.ApplicationProperties;
+import hu.alphabox.jgc.github.GitHubRootCallHandler.RateLimitResponse.Resources;
+import hu.alphabox.jgc.github.GitHubRootCallHandler.RateLimitResponse.Resources.Resource;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/v3")
+@RequiredArgsConstructor
+@EnableConfigurationProperties(ApplicationProperties.class)
+class GitHubRootCallHandler {
+
+  @GetMapping(produces = "application/vnd.github.v3+json")
+  ResponseEntity<String> handleMetaRoot() {
+    return ResponseEntity.ok().build();
+  }
+
+  record RateLimitResponse(
+      Resources resources
+  ) {
+
+    record Resources(
+        Resource graphql,
+        Resource core
+    ) {
+
+      record Resource(
+          Integer remaining,
+          Integer limit,
+          long reset
+      ) {
+
+      }
+    }
+  }
+
+  @GetMapping("/rate_limit")
+  ResponseEntity<RateLimitResponse> handleRateLimit() {
+    //Gitea currently does not have rate limiting.
+    //The header is required so that Jira “believes” we are a GitHub app.
+    return ResponseEntity.ok()
+        .header("x-github", "fake")
+        .body(
+            new RateLimitResponse(
+                new Resources(
+                    new Resource(50500, 50500, Instant.now().plus(1, ChronoUnit.MINUTES).getEpochSecond()),
+                    new Resource(50500, 50500, Instant.now().plus(1, ChronoUnit.MINUTES).getEpochSecond())
+                )
+            )
+        );
+  }
+}

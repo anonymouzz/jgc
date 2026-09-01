@@ -59,6 +59,9 @@ class SecurityConfiguration {
   public SecurityFilterChain browserSecurityFilterChain(HttpSecurity http) {
     Builder requestMatcherBuilder = PathPatternRequestMatcher.withDefaults();
 
+    // POST /login/token is handled by TokenAuthenticationFilter (TokenLoginConfigurer).
+    // Without it on this chain, permitAll alone lets DispatcherServlet see POST → 405
+    // (only LoginPageController maps GET /login/token).
     return http
         .securityMatcher(new OrRequestMatcher(
             requestMatcherBuilder.matcher("/favicon.ico"),
@@ -73,6 +76,8 @@ class SecurityConfiguration {
             EndpointRequest.toAnyEndpoint()
         ))
         .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+        .with(new TokenLoginConfigurer(), configurer -> {
+        })
         // TODO Should enable CSRF, but it messes up the request cache
         .csrf(AbstractHttpConfigurer::disable)
         .build();

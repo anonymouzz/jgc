@@ -52,9 +52,12 @@ To throttle outgoing traffic to your Gitea instance, you can set a concurrency l
 
 | Environment variable                        | Property Key                                 | Default value |
 |---------------------------------------------|:---------------------------------------------|:--------------|
-| `APPLICATION_GITEA_CLIENT_CONCURRENCYLIMIT` | `application.gitea.client.concurrency-limit` | `12`          | 
+| `APPLICATION_GITEA_CLIENT_CONCURRENCYLIMIT` | `application.gitea.client.concurrency-limit` | `12`          |
+| `APPLICATION_GRAPHQL_TIMEOUTSECONDS`        | `application.graphql.timeout-seconds`        | `10`          |
 
-Increasing this value may improve performance for bulk operations but could lead to errors or high CPU usage on the Gitea server if set too high.
+Increasing the concurrency limit may improve performance for bulk operations but could lead to errors or high CPU usage on the Gitea server if set too high.
+
+GraphQL timeout is in **seconds**. Unset keeps GitHub-compatible **10**. Raise it (e.g. `60` or `120`) if Atlassian backfill returns HTTP 408 / `AbortExecutionException` on large repos while Gitea and jgc CPU stay low.
 
 _Note:_ At backfill, you could see some `Unresolved RestClientException` that caused by concurrency and GraphQL timeout limits. Don't worry about it, the Jira
 plugin will retry these GraphQL requests.

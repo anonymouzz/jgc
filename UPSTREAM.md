@@ -6,6 +6,10 @@
 
 Pin the Ansible deploy to an image digest after the first successful Hub publish.
 
+## Fork deltas (vs alphabox)
+
+- GraphQL HTTP timeout is configurable: `APPLICATION_GRAPHQL_TIMEOUTSECONDS` / `application.graphql.timeout-seconds` (default `10`). Needed so Atlassian org backfill can finish large Gitea repos without jgc aborting at 10s.
+
 ## Hub secrets (GitHub Actions)
 
 Repository secrets:

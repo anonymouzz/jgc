@@ -4,6 +4,9 @@ server:
 application:
   base-url:
   installation-path: installation.json
+  # GraphQL request timeout (seconds). Override: APPLICATION_GRAPHQL_TIMEOUTSECONDS
+  graphql:
+    timeout-seconds: 10
   gitea:
     base-url:
     client:

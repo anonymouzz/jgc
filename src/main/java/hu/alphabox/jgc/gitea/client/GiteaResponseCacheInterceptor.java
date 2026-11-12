@@ -5,7 +5,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.cache.CaffeineCacheMetrics;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -17,8 +16,11 @@ import org.springframework.util.unit.DataSize;
 
 /**
  * Caches successful GET responses by full request URI for a short TTL.
- * Concurrent requests for the same URI are collapsed into one Gitea call.
  * Non-2xx responses and non-GET requests pass through untouched.
+ *
+ * <p>The Gitea call runs outside the cache: a loading {@code get} would hold
+ * a hash-bin lock for the whole call, and one hung call then blocks other
+ * keys and expiry. Concurrent misses for the same URI each call Gitea.
  *
  * <p>No explicit invalidation: list endpoints (pull request pages, refs,
  * commit history) can be up to {@code ttl} stale. Acceptable for the
@@ -50,38 +52,18 @@ class GiteaResponseCacheInterceptor implements ClientHttpRequestInterceptor {
     }
 
     String key = request.getURI().toString();
-    try {
-      return cache.get(key, _ -> load(request, body, execution));
-    } catch (Passthrough e) {
-      return e.response;
-    } catch (UncheckedIOException e) {
-      throw e.getCause();
+    BufferedClientHttpResponse cached = cache.getIfPresent(key);
+    if (cached != null) {
+      return cached;
     }
-  }
 
-  private BufferedClientHttpResponse load(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
+    BufferedClientHttpResponse buffered;
     try (ClientHttpResponse response = execution.execute(request, body)) {
-      BufferedClientHttpResponse buffered = BufferedClientHttpResponse.of(response);
-      if (!buffered.getStatusCode().is2xxSuccessful()) {
-        throw new Passthrough(buffered);
-      }
-      return buffered;
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      buffered = BufferedClientHttpResponse.of(response);
     }
-  }
-
-  /**
-   * Carries a response that must reach the caller but must not be cached.
-   * Thrown from the Caffeine loader so no mapping is recorded.
-   */
-  private static final class Passthrough extends RuntimeException {
-
-    private final transient ClientHttpResponse response;
-
-    private Passthrough(ClientHttpResponse response) {
-      super(null, null, false, false);
-      this.response = response;
+    if (buffered.getStatusCode().is2xxSuccessful()) {
+      cache.put(key, buffered);
     }
+    return buffered;
   }
 }

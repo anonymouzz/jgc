@@ -22,8 +22,8 @@ public final class PageInfoMapper {
     return new PageInfo(
         startCursor,
         endCursor,
-        linkManager.hasPreviousPage(),
-        linkManager.hasNextPage()
+        linkManager.hasNextPage(),
+        linkManager.hasPreviousPage()
     );
   }
 }

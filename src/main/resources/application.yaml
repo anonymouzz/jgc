@@ -12,6 +12,10 @@ application:
     client:
       access-token:
       concurrency-limit: 12
+      # GET response cache for the backfill client (CachedGiteaClient).
+      # Override: APPLICATION_GITEA_CLIENT_CACHETTL, APPLICATION_GITEA_CLIENT_CACHEMAXSIZE
+      cache-ttl: 10m
+      cache-max-size: 32MB
 
 spring:
   threads:

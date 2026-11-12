@@ -1,7 +1,7 @@
 package hu.alphabox.jgc.github.graphql;
 
 import hu.alphabox.jgc.config.LogTopic;
-import hu.alphabox.jgc.gitea.client.GiteaClient;
+import hu.alphabox.jgc.gitea.client.CachedGiteaClient;
 import hu.alphabox.jgc.gitea.client.model.Reference;
 import hu.alphabox.jgc.github.graphql.mapper.ReferenceMapper;
 import hu.alphabox.jgc.github.graphql.mapper.RepositoryMapper;
@@ -26,7 +26,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @RequiredArgsConstructor
 class RepositoryController {
 
-  private final GiteaClient giteaClient;
+  private final CachedGiteaClient giteaClient;
   private final RepositoryMapper mapper;
   private final ReferenceMapper referenceMapper;
 

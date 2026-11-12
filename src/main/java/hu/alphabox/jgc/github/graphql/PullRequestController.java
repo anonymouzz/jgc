@@ -3,7 +3,7 @@ package hu.alphabox.jgc.github.graphql;
 import hu.alphabox.jgc.LinkHeaderProcessor.LinkManager;
 import hu.alphabox.jgc.config.LogTopic;
 import hu.alphabox.jgc.gitea.GiteaPageResponse;
-import hu.alphabox.jgc.gitea.client.GiteaClient;
+import hu.alphabox.jgc.gitea.client.CachedGiteaClient;
 import hu.alphabox.jgc.gitea.client.model.Commit;
 import hu.alphabox.jgc.gitea.client.model.PullReview;
 import hu.alphabox.jgc.github.graphql.mapper.PullRequestMapper;
@@ -38,7 +38,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @RequiredArgsConstructor
 class PullRequestController {
 
-  private final GiteaClient giteaClient;
+  private final CachedGiteaClient giteaClient;
   private final PullRequestMapper mapper;
   private final PullRequestCommitMapper commitMapper;
   private final PullRequestReviewMapper reviewMapper;

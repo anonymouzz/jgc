@@ -2,7 +2,7 @@ package hu.alphabox.jgc.github.graphql;
 
 import hu.alphabox.jgc.config.LogTopic;
 import hu.alphabox.jgc.gitea.GiteaPageResponse;
-import hu.alphabox.jgc.gitea.client.GiteaClient;
+import hu.alphabox.jgc.gitea.client.CachedGiteaClient;
 import hu.alphabox.jgc.github.graphql.mapper.CommitMapper.CommitHistoryMapper;
 import hu.alphabox.jgc.github.graphql.mapper.GitActorMapper;
 import hu.alphabox.jgc.github.graphql.schema.Commit;
@@ -23,7 +23,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @RequiredArgsConstructor
 class CommitController {
 
-  private final GiteaClient giteaClient;
+  private final CachedGiteaClient giteaClient;
   private final GitActorMapper actorMapper;
   private final CommitHistoryMapper historyMapper;
 

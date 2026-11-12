@@ -2,7 +2,7 @@ package hu.alphabox.jgc.github.graphql.mapper;
 
 import hu.alphabox.jgc.TypeConversionMapper;
 import hu.alphabox.jgc.config.MapperCentralConfig;
-import hu.alphabox.jgc.gitea.client.GiteaClient;
+import hu.alphabox.jgc.gitea.client.CachedGiteaClient;
 import hu.alphabox.jgc.gitea.client.model.Commit;
 import hu.alphabox.jgc.github.graphql.schema.Actor;
 import hu.alphabox.jgc.github.graphql.schema.GitActor;
@@ -22,7 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 public abstract class GitActorMapper {
 
   @Setter(onMethod = @__(@Autowired))
-  private GiteaClient giteaClient;
+  private CachedGiteaClient giteaClient;
 
   @Named("actor")
   public Actor actor(hu.alphabox.jgc.gitea.client.model.User user) {

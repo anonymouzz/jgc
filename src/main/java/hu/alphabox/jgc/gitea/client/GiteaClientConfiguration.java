@@ -1,12 +1,15 @@
 package hu.alphabox.jgc.gitea.client;
 
 import hu.alphabox.jgc.gitea.GiteaConfigurationProperties;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -27,18 +30,44 @@ class GiteaClientConfiguration {
   private final GiteaConfigurationProperties properties;
   private final GiteaClientConfigurationProperties clientProperties;
 
+  /** One instance for every client, so the limit is global. */
+  @Bean
+  GiteaConcurrencyLimitInterceptor giteaConcurrencyLimitInterceptor() {
+    return new GiteaConcurrencyLimitInterceptor(clientProperties.concurrencyLimit());
+  }
 
   @Bean
-  GiteaClient giteaClient(Builder restClientBuilder) {
-    RestClient restClient = restClientBuilder
+  @Primary
+  GiteaClient giteaClient(Builder restClientBuilder, GiteaConcurrencyLimitInterceptor concurrencyLimit) {
+    return createClient(restClientBuilder, GiteaClient.class, List.of(concurrencyLimit));
+  }
+
+  @Bean
+  CachedGiteaClient cachedGiteaClient(
+      Builder restClientBuilder,
+      GiteaConcurrencyLimitInterceptor concurrencyLimit,
+      MeterRegistry meterRegistry
+  ) {
+    GiteaResponseCacheInterceptor cache = new GiteaResponseCacheInterceptor(
+        clientProperties.cacheTtl(),
+        clientProperties.cacheMaxSize(),
+        meterRegistry
+    );
+    // Order matters: cache first, so hits never wait for a permit.
+    return createClient(restClientBuilder, CachedGiteaClient.class, List.of(cache, concurrencyLimit));
+  }
+
+  private <T extends GiteaClient> T createClient(Builder restClientBuilder, Class<T> type, List<ClientHttpRequestInterceptor> interceptors) {
+    Builder builder = restClientBuilder
         .baseUrl(properties.baseUrl())
-        .requestInterceptor(new GiteaTokenAuthenticationInterceptor(clientProperties.accessToken()))
-        .build();
+        .requestInterceptor(new GiteaTokenAuthenticationInterceptor(clientProperties.accessToken()));
+    interceptors.forEach(builder::requestInterceptor);
+    RestClient restClient = builder.build();
 
     RestClientAdapter adapter = RestClientAdapter.create(restClient);
     HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
 
-    return factory.createClient(GiteaClient.class);
+    return factory.createClient(type);
   }
 
   @Slf4j

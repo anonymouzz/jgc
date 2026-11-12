@@ -1,7 +1,7 @@
 package hu.alphabox.jgc.github.graphql;
 
 import hu.alphabox.jgc.config.LogTopic;
-import hu.alphabox.jgc.gitea.client.GiteaClient;
+import hu.alphabox.jgc.gitea.client.CachedGiteaClient;
 import hu.alphabox.jgc.github.graphql.mapper.CommitMapper;
 import hu.alphabox.jgc.github.graphql.schema.Commit;
 import hu.alphabox.jgc.github.graphql.schema.GitObject;
@@ -21,7 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @Slf4j(topic = LogTopic.BACKFILL_DATA_FETCHING)
 class RefController {
 
-  private final GiteaClient giteaClient;
+  private final CachedGiteaClient giteaClient;
   private final CommitMapper commitMapper;
 
   @SchemaMapping(typeName = "Ref", field = "associatedPullRequests")

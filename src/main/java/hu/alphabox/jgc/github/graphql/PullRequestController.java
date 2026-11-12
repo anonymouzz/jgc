@@ -85,14 +85,18 @@ class PullRequestController {
           first
       ));
 
+      PullRequestConnection connection = mapper.map(after, response, repository);
       log.info(
-          "Fetching pull requests for: {}\nCurrent page: {}, Total pull request count: {}",
+          "Fetching pull requests for: {}\nCurrent page: {}, Total pull request count: {}, Page size: {}, Has next page: {}, End cursor: {}",
           "%s/%s".formatted(repository.owner().login(), repository.name()),
           page,
-          response.totalCount()
+          response.totalCount(),
+          response.data().size(),
+          connection.getPageInfo().hasNextPage(),
+          connection.getPageInfo().endCursor()
       );
 
-      return mapper.map(after, response, repository);
+      return connection;
     } catch (HttpClientErrorException.NotFound _) {
       return mapper.map(after, new GiteaPageResponse<>(Collections.emptyList(), LinkManager.empty(), 0), repository);
     }

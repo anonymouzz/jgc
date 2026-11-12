@@ -10,6 +10,7 @@ import hu.alphabox.jgc.github.graphql.mapper.PullRequestMapper;
 import hu.alphabox.jgc.github.graphql.mapper.PullRequestMapper.PullRequestCommitMapper;
 import hu.alphabox.jgc.github.graphql.mapper.PullRequestMapper.PullRequestReviewMapper;
 import hu.alphabox.jgc.github.graphql.schema.IssueOrder;
+import hu.alphabox.jgc.github.graphql.schema.PageInfo;
 import hu.alphabox.jgc.github.graphql.schema.PullRequest;
 import hu.alphabox.jgc.github.graphql.schema.PullRequestCommitConnection;
 import hu.alphabox.jgc.github.graphql.schema.PullRequestConnection;
@@ -85,7 +86,7 @@ class PullRequestController {
           first
       ));
 
-      PullRequestConnection connection = mapper.map(after, response, repository);
+      PullRequestConnection connection = withNextPageFromTotal(mapper.map(after, response, repository), page, response);
       log.info(
           "Fetching pull requests for: {}\nCurrent page: {}, Total pull request count: {}, Page size: {}, Has next page: {}, End cursor: {}",
           "%s/%s".formatted(repository.owner().login(), repository.name()),
@@ -100,6 +101,29 @@ class PullRequestController {
     } catch (HttpClientErrorException.NotFound _) {
       return mapper.map(after, new GiteaPageResponse<>(Collections.emptyList(), LinkManager.empty(), 0), repository);
     }
+  }
+
+  /**
+   * The Gitea Link header does not always reach the page info for this list.
+   * Fall back to X-Total-Count. On the last short page this says true once
+   * more; the next page is empty and ends the walk.
+   */
+  private static PullRequestConnection withNextPageFromTotal(
+      PullRequestConnection connection,
+      int page,
+      GiteaPageResponse<?> response
+  ) {
+    PageInfo pageInfo = connection.getPageInfo();
+    int pageSize = response.data().size();
+    if (pageInfo.hasNextPage() || pageSize == 0 || (long) page * pageSize >= response.totalCount()) {
+      return connection;
+    }
+    return new PullRequestConnection(
+        connection.getEdges(),
+        connection.getNodes(),
+        new PageInfo(pageInfo.startCursor(), pageInfo.endCursor(), true, pageInfo.hasPreviousPage()),
+        connection.getTotalCount()
+    );
   }
 
   @SchemaMapping(typeName = "PullRequest", field = "reviews")

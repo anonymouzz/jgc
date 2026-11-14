@@ -128,12 +128,17 @@ public interface PullRequestMapper {
 
     List<ReviewRequestEdge> edges(List<User> requestedReviewers);
 
+    /**
+     * Gitea sends null when nobody is requested. GitHub sends an empty list,
+     * so the connection never carries null edges or nodes.
+     */
     default ReviewRequestConnection map(List<User> users) {
+      List<User> requested = users != null ? users : List.of();
       return new ReviewRequestConnection(
-          edges(users),
-          nodes(users),
+          edges(requested),
+          nodes(requested),
           null, // TODO
-          users != null ? users.size() : 0
+          requested.size()
       );
     }
   }

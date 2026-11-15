@@ -230,6 +230,7 @@ public interface GiteaClient {
    * @param repo         name of the repo (required)
    * @param sha          SHA or branch to start listing commits from (usually &#39;master&#39;) (optional)
    * @param path         filepath of a file/dir (optional)
+   * @param since        only commits after this date will be returned (ISO 8601 format) (optional)
    * @param stat         include diff stats for every commit (disable for speedup, default &#39;true&#39;) (optional)
    * @param verification include verification for every commit (disable for speedup, default &#39;true&#39;) (optional)
    * @param files        include a list of affected files for every commit (disable for speedup, default &#39;true&#39;) (optional)
@@ -244,6 +245,7 @@ public interface GiteaClient {
       @PathVariable("repo") String repo,
       @RequestParam(value = "sha", required = false) @Nullable String sha,
       @RequestParam(value = "path", required = false) @Nullable String path,
+      @RequestParam(value = "since", required = false) @Nullable String since,
       @RequestParam(value = "stat", required = false) @Nullable Boolean stat,
       @RequestParam(value = "verification", required = false) @Nullable Boolean verification,
       @RequestParam(value = "files", required = false) @Nullable Boolean files,

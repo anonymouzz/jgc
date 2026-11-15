@@ -40,6 +40,7 @@ class CommitController {
         commit.repository().name(),
         commit.oid(),
         null,
+        since != null ? since.toString() : null,
         false,
         false,
         true,
